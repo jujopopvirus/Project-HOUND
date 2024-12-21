@@ -1,0 +1,227 @@
+[gd_scene load_steps=23 format=3 uid="uid://fn1au8vhchj4"]
+
+[ext_resource type="PackedScene" uid="uid://dn2qiejma31v6" path="res://content/config/actors/HOUND/player.tscn" id="1_hacng"]
+[ext_resource type="Texture2D" uid="uid://hdmihs8o6f52" path="res://content/assets/texture/kenney_texture/texture_03.png" id="1_osgic"]
+[ext_resource type="Texture2D" uid="uid://dvepimpklxo6j" path="res://content/assets/texture/kenney_texture/orangegrid.tga" id="2_3njuk"]
+[ext_resource type="Script" path="res://content/config/system/enemy_resources/resources/Enemy_Grunt.gd" id="2_7ryi3"]
+[ext_resource type="Texture2D" uid="uid://11guj7akp4ig" path="res://content/assets/texture/sky/sky_linekotsi_20.png" id="5_ugisd"]
+[ext_resource type="Texture2D" uid="uid://dlmcmidwmutkq" path="res://content/assets/texture/kenney_texture/red/texture_09.png" id="6_fku26"]
+[ext_resource type="PackedScene" uid="uid://c8lpuq4ig462e" path="res://content/config/system/environmental_interactions/BoostArea.tscn" id="7_taq5r"]
+[ext_resource type="PackedScene" uid="uid://ow2x17tyxu5p" path="res://content/assets/CSGStairMaker3D.tscn" id="8_kx08l"]
+[ext_resource type="Texture2D" uid="uid://by43rsrpo3hho" path="res://content/assets/texture/kenney_texture/Green/texture_09.png" id="8_rltdv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_23ifr"]
+albedo_color = Color(0.745098, 0, 0.172549, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_iueae"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_capq7"]
+panorama = ExtResource("5_ugisd")
+
+[sub_resource type="Sky" id="Sky_ktd6s"]
+sky_material = SubResource("PanoramaSkyMaterial_capq7")
+
+[sub_resource type="Environment" id="Environment_5exe7"]
+background_mode = 2
+sky = SubResource("Sky_ktd6s")
+ambient_light_color = Color(0.157403, 0.140569, 0.349297, 1)
+ambient_light_sky_contribution = 0.8
+reflected_light_source = 2
+tonemap_mode = 2
+tonemap_exposure = 1.2
+tonemap_white = 1.5
+ssr_enabled = true
+ssao_intensity = 5.0
+sdfgi_use_occlusion = true
+glow_normalized = true
+glow_strength = 0.8
+glow_bloom = 0.15
+glow_blend_mode = 0
+glow_hdr_threshold = 1.72
+adjustment_enabled = true
+adjustment_saturation = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_36axg"]
+albedo_texture = ExtResource("1_osgic")
+uv1_scale = Vector3(2, 2, 2)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_38sjb"]
+albedo_texture = ExtResource("2_3njuk")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5nm2l"]
+albedo_texture = ExtResource("2_3njuk")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q3wmd"]
+albedo_texture = ExtResource("1_osgic")
+uv1_scale = Vector3(2, 2, 2)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kqaru"]
+albedo_texture = ExtResource("1_osgic")
+uv1_scale = Vector3(2, 2, 2)
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vw08p"]
+size = Vector3(4, 0.6, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76u38"]
+albedo_texture = ExtResource("8_rltdv")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_khj4u"]
+albedo_texture = ExtResource("6_fku26")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Game_Controller" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
+
+[node name="player" parent="Game_Controller" instance=ExtResource("1_hacng")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, -6)
+
+[node name="Enemy_Body" type="CharacterBody3D" parent="Game_Controller"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, 0)
+collision_layer = 5
+collision_mask = 5
+script = ExtResource("2_7ryi3")
+Defense = 5.0
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Game_Controller/Enemy_Body"]
+material = SubResource("StandardMaterial3D_23ifr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Game_Controller/Enemy_Body"]
+shape = SubResource("CylinderShape3D_iueae")
+
+[node name="Map" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
+transform = Transform3D(-0.749998, -0.625002, -0.216506, -0.433012, 0.216503, 0.875001, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Map"]
+environment = SubResource("Environment_5exe7")
+
+[node name="Tower" type="CSGCylinder3D" parent="Map"]
+transform = Transform3D(9, 0, 0, 0, 3, 0, 0, 0, 9, 0, 0, 0)
+use_collision = true
+radius = 6.0
+height = 12.0
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Map/Tower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+radius = 6.0
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Map/Tower"]
+transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_36axg")
+operation = 2
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Map/Tower/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+radius = 6.0
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
+radius = 5.0
+height = 12.0
+material = SubResource("StandardMaterial3D_5nm2l")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.1961, 0)
+radius = 7.0
+height = 20.0
+material = SubResource("StandardMaterial3D_q3wmd")
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.52941, 0)
+radius = 7.0
+height = 6.0
+material = SubResource("StandardMaterial3D_kqaru")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Map/Tower"]
+transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, 3.05555, -0.00156689, 2.84534)
+size = Vector3(13, 1, 8)
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Map/Tower/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.04481, -4.97827, -17.4656)
+size = Vector3(26, 1, 20)
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="Area3D" parent="Map/Tower/CSGBox3D2" instance=ExtResource("7_taq5r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.49998, -16.4054, -32.6081)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/Tower/CSGBox3D2/Area3D"]
+shape = SubResource("BoxShape3D_vw08p")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Map/Tower/CSGBox3D2/Area3D"]
+size = Vector3(4, 0.5, 4)
+material = SubResource("StandardMaterial3D_76u38")
+
+[node name="CSGStairMaker3D2" parent="Map/Tower/CSGBox3D2" instance=ExtResource("8_kx08l")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.00634, -2.25165, -11.9756)
+material_override = SubResource("StandardMaterial3D_38sjb")
+size = Vector3(18, 5.52832, 11.0104)
+material = SubResource("StandardMaterial3D_38sjb")
+num_stairs = 18
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Map/Tower"]
+transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, 0.0302777, -1.66667, 1.07027)
+size = Vector3(14, 1, 17)
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="CSGStairMaker3D" parent="Map/Tower/CSGBox3D6" instance=ExtResource("8_kx08l")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.272499, -5.78101, -17)
+material_override = SubResource("StandardMaterial3D_38sjb")
+size = Vector3(18, 12.479, 12)
+material = SubResource("StandardMaterial3D_38sjb")
+num_stairs = 30
+
+[node name="CSGStairMaker3D2" parent="Map/Tower/CSGBox3D6" instance=ExtResource("8_kx08l")]
+transform = Transform3D(-4.37114e-08, 0, -1, 8.74228e-08, -1, -3.82137e-15, -1, -8.74228e-08, 4.37114e-08, -0.272499, -5.02051, -3.5)
+material_override = SubResource("StandardMaterial3D_38sjb")
+size = Vector3(9, 10, 12)
+material = SubResource("StandardMaterial3D_38sjb")
+num_stairs = 10
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Map/Tower"]
+transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, -3.00779, -0.00156689, 2.84534)
+size = Vector3(13, 1, 8)
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="Area3D" parent="Map/Tower/CSGBox3D3" instance=ExtResource("7_taq5r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.070118, -16.4054, -33.6081)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/Tower/CSGBox3D3/Area3D"]
+shape = SubResource("BoxShape3D_vw08p")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Map/Tower/CSGBox3D3/Area3D"]
+size = Vector3(4, 0.5, 4)
+material = SubResource("StandardMaterial3D_76u38")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Map/Tower/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.87009, -4.97827, -17.5)
+size = Vector3(25.6, 1, 20)
+material = SubResource("StandardMaterial3D_38sjb")
+
+[node name="CSGStairMaker3D2" parent="Map/Tower/CSGBox3D3" instance=ExtResource("8_kx08l")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.784491, -2.25165, -11.9756)
+material_override = SubResource("StandardMaterial3D_38sjb")
+size = Vector3(18, 5.52832, 11.4287)
+material = SubResource("StandardMaterial3D_38sjb")
+num_stairs = 18
+
+[node name="Stuff" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, -16.552, 0)
+size = Vector3(13, 2, 20)
+material = SubResource("StandardMaterial3D_khj4u")

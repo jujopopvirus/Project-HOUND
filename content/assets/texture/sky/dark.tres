@@ -1,0 +1,52 @@
+[gd_resource type="Environment" load_steps=6 format=3 uid="uid://b6bmhq3h77cd7"]
+
+[ext_resource type="Shader" path="res://contents/assets/map/sky.gdshader" id="1_bf0fu"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kl4o2"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y0oq5"]
+noise = SubResource("FastNoiseLite_kl4o2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_27y47"]
+shader = ExtResource("1_bf0fu")
+shader_parameter/day_bottom_color = Color(0.388235, 0.592157, 0.847059, 1)
+shader_parameter/day_top_color = Color(0, 0.890196, 0.890196, 1)
+shader_parameter/sunset_bottom_color = Color(0, 0, 0, 1)
+shader_parameter/sunset_top_color = Color(0, 0, 0, 1)
+shader_parameter/night_bottom_color = Color(0, 0, 0, 1)
+shader_parameter/night_top_color = Color(0, 0, 0, 1)
+shader_parameter/horizon_color_day = Color(0.4, 1, 1, 1)
+shader_parameter/horizon_color_sunset = Color(1, 1, 1, 1)
+shader_parameter/horizon_color_night = Color(0, 0.8, 1, 1)
+shader_parameter/horizon_falloff = null
+shader_parameter/sun_col = Color(1, 1, 1, 1)
+shader_parameter/sun_size = 1.0
+shader_parameter/sun_blur = 0.01
+shader_parameter/moon_col = Color(1, 1, 1, 1)
+shader_parameter/moon_size = 1.0
+shader_parameter/moon_crescent_offset = 0.5
+shader_parameter/clouds_main_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_edge_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_speed = null
+shader_parameter/clouds_scale = 1.0
+shader_parameter/clouds_cutoff = null
+shader_parameter/clouds_fuzziness = null
+shader_parameter/stars_cutoff = null
+shader_parameter/stars_speed = null
+shader_parameter/clouds_noise_texture = SubResource("NoiseTexture2D_y0oq5")
+
+[sub_resource type="Sky" id="Sky_gjkk6"]
+sky_material = SubResource("ShaderMaterial_27y47")
+
+[resource]
+background_mode = 2
+background_color = Color(0.207843, 0.192157, 0.207843, 1)
+sky = SubResource("Sky_gjkk6")
+tonemap_mode = 2
+tonemap_exposure = 0.9
+tonemap_white = 1.4
+ssao_intensity = 5.0
+sdfgi_read_sky_light = false
+glow_strength = 1.3
+volumetric_fog_emission = Color(1, 1, 1, 1)
+volumetric_fog_emission_energy = 0.0
