@@ -1,13 +1,26 @@
-[gd_scene load_steps=8 format=3 uid="uid://dn2qiejma31v6"]
+[gd_scene load_steps=10 format=3 uid="uid://dn2qiejma31v6"]
 
 [ext_resource type="Script" path="res://content/config/actors/HOUND/player.gd" id="1_4fljm"]
 [ext_resource type="Script" path="res://content/config/system/player_character/actions_machines.gd" id="2_kpxqi"]
 [ext_resource type="Script" path="res://content/config/system/player_character/player_actions/Player_Base.gd" id="3_wfvwu"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
+[ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_yspxw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vu2hw"]
+shader = ExtResource("4_t1bn0")
+shader_parameter/shift_x = 0.0
+shader_parameter/shift_y = 0.0
+shader_parameter/shift_rotate = 0.0
+shader_parameter/crosshair_color = Color(1, 1, 1, 1)
+shader_parameter/spread = 0.07
+shader_parameter/shape_sides = 4.0
+shader_parameter/radius_rectangle = 0.2
+shader_parameter/rectangle_size_x = 1.0
+shader_parameter/rectangle_scale = 3.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5cgq1"]
 shader = ExtResource("4_snuhn")
@@ -23,19 +36,20 @@ collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_4fljm")
 Char_Stats = NodePath("Character_Stats")
+CAM_CONTROLLER = NodePath("head/camera/camera")
 ground_friction = 8
 air_cap = 2.0
 air_move_speed = 700
-CAM_CONTROLLER = NodePath("camcontroller/camera")
 
 [node name="Character_Stats" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_kpxqi")
+SPRINT_speed = 15.0
 
 [node name="Player_Base" type="Node" parent="Character_Stats" node_paths=PackedStringArray("camera", "Player", "Stats")]
 unique_name_in_owner = true
 script = ExtResource("3_wfvwu")
-camera = NodePath("../../camcontroller")
+camera = NodePath("../../head")
 Player = NodePath("../..")
 Stats = NodePath("..")
 
@@ -49,8 +63,7 @@ target_position = Vector3(0, -1.2, 0)
 
 [node name="uppercast" type="RayCast3D" parent="staircast"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.453529, -0.830603)
-target_position = Vector3(0, -0.55, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0706953, -0.830603)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -61,11 +74,12 @@ visible = false
 mesh = SubResource("CapsuleMesh_yspxw")
 skeleton = NodePath("../..")
 
-[node name="camcontroller" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
-[node name="camera" type="Camera3D" parent="camcontroller"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77987, 0)
+[node name="camera" type="Node3D" parent="head"]
+
+[node name="camera" type="Camera3D" parent="head/camera"]
 
 [node name="Hud" type="CanvasLayer" parent="."]
 layer = 2
@@ -84,6 +98,21 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="Hud/crosshair"]
+material = SubResource("ShaderMaterial_vu2hw")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -4.0
+offset_right = -4.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.493968, 0.418391, 0.459039, 1)
 
 [node name="hud" type="Control" parent="Hud"]
 z_index = 1

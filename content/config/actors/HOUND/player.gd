@@ -13,6 +13,9 @@ var autobhopping : bool = true
 @onready var WALK_SPD = Char_Stats.WALKING_speed
 @onready var JUMP_VELOCITY = Char_Stats.JUMP_strength
 var wish_dir = Vector3.ZERO
+@export var CAM_CONTROLLER : Camera3D
+@onready var Camera_Smooth : Node3D = CAM_CONTROLLER.get_parent()
+
 
 @export_group("Movement Settings")
 @export_subgroup("Ground Movements")
@@ -37,11 +40,11 @@ var _rotation_input : float
 @onready var MOUSE_SENSITIVITY = Char_Stats.MOUSE_SENSITIVITY
 var _tilt_input : float
 var tilt_limit := deg_to_rad(85.0)
-@export var CAM_CONTROLLER : Camera3D
+
 
 @onready var stair_lower : RayCast3D = %lowercast
 @onready var stair_upper : RayCast3D = %uppercast
-const MAX_STEP_HEIGHT = 0.5
+const MAX_STEP_HEIGHT = 0.7
 var _snapped_to_stairs_frame := false
 var _last_frame_was_on_floor = -INF
 
@@ -79,6 +82,22 @@ func update_cam(delta):
 	_rotation_input = 0.0
 	_tilt_input = 0.0
 
+var _saved_camera_global_pos = null
+func _save_camera_pos_for_smoothing():
+	if _saved_camera_global_pos == null:
+		_saved_camera_global_pos = Camera_Smooth.global_position
+
+func _slide_camera_smooth_back_to_origin(delta):
+	if _saved_camera_global_pos == null: return
+	Camera_Smooth.global_position.y = _saved_camera_global_pos.y
+	Camera_Smooth.position.y = clampf(Camera_Smooth.position.y, -0.7, 0.7)
+	var move_amount = max(self.velocity.length() * delta, WALK_SPD/2 * delta)
+	Camera_Smooth.position.y = move_toward(Camera_Smooth.position.y, 0.0, move_amount)
+	_saved_camera_global_pos = Camera_Smooth.global_position
+	if Camera_Smooth.position.y == 0:
+		_saved_camera_global_pos = null
+
+
 #---------------------------------------------------------------------------------------
 #region Character_Movements
 
@@ -100,6 +119,7 @@ func _snap_down_to_stairs() -> void:
 		var body_test_result = PhysicsTestMotionResult3D.new()
 		
 		if _run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			_save_camera_pos_for_smoothing()
 			var translate_y = body_test_result.get_travel().y
 			self.position.y += translate_y
 			apply_floor_snap()
@@ -122,6 +142,7 @@ func _snap_up_to_stairs(delta) -> bool:
 		stair_upper.global_position = down_check.get_collision_point() + Vector3(0, MAX_STEP_HEIGHT, 0) + expected_motion.normalized() * 0.1
 		stair_upper.force_raycast_update()
 		if stair_upper.is_colliding() and not is_surface_too_steep(stair_upper.get_collision_normal()):
+			_save_camera_pos_for_smoothing()
 			self.global_position = step_pos_with_clearance.origin + down_check.get_travel()
 			apply_floor_snap()
 			_snapped_to_stairs_frame = true
@@ -201,6 +222,7 @@ func _physics_process(delta):
 		move_and_slide()
 		_snap_down_to_stairs()
 	
+	_slide_camera_smooth_back_to_origin(delta)
 	update_cam(delta)
 
 
@@ -210,5 +232,4 @@ func _physics_process(delta):
 #---------------------
 #Player Commands
 func player_jump(Jump_Strength : float) -> void:
-	if velocity.y >= 0 :
-		self.velocity.y += Jump_Strength
+	self.velocity.y += Jump_Strength
