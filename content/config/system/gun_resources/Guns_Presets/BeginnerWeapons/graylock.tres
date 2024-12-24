@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=3 format=3 uid="uid://bgquq5mdiy7mi"]
+
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_nnjbc"]
+[ext_resource type="ArrayMesh" uid="uid://b7hpnrn3b7axh" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterC.res" id="2_qd3tr"]
+
+[resource]
+script = ExtResource("1_nnjbc")
+Gun_Type = 1
+Gun_Name = "Graylock"
+view_model = ExtResource("2_qd3tr")
+ammo = "Light"
+cooldown = 0.2
+sway = 0.1
+automatic = true
+bullet_damage = 30
+spread = 1.5
+max_magazines = 6
+bullet_amnt = 1
+bullet_range = 60
+firing_sounds = Array[AudioStream]([])

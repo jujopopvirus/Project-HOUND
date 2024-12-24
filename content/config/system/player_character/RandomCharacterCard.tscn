@@ -1,0 +1,119 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw6kpqqgbjo17"]
+
+[ext_resource type="Script" path="res://content/scenes/testmaps/character_select_test.gd" id="1_1lra1"]
+
+[node name="RANDOM_CHARACTER_GENERATOR" type="Node2D"]
+script = ExtResource("1_1lra1")
+
+[node name="Card_RESOLUTION" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 192.0
+offset_bottom = 384.0
+
+[node name="Background" type="ColorRect" parent="Card_RESOLUTION"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_right = -96.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.374139, 0.374139, 0.374139, 1)
+metadata/_edit_lock_ = true
+
+[node name="GENDER_LABEL" type="Label" parent="Card_RESOLUTION/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 64.0
+offset_top = 96.0
+offset_right = 129.0
+offset_bottom = 112.0
+theme_override_font_sizes/font_size = 10
+text = "GENDER"
+horizontal_alignment = 1
+
+[node name="Name_Control" type="Control" parent="Card_RESOLUTION/Background"]
+anchors_preset = 0
+offset_left = 32.0
+offset_top = 104.0
+offset_right = 160.0
+offset_bottom = 144.0
+
+[node name="NAME_LABEL" type="Label" parent="Card_RESOLUTION/Background/Name_Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -14.0
+offset_right = 32.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "NAME"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="SPEED_LABEL" type="Label" parent="Card_RESOLUTION/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 152.0
+offset_right = 89.0
+offset_bottom = 175.0
+text = "SPEED :"
+
+[node name="STRENGTH_LABEL" type="Label" parent="Card_RESOLUTION/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 184.0
+offset_right = 115.0
+offset_bottom = 207.0
+text = "STRENGTH :"
+
+[node name="ENDURANCE_LABEL" type="Label" parent="Card_RESOLUTION/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 216.0
+offset_right = 131.0
+offset_bottom = 239.0
+text = "ENDURANCE :"
+
+[node name="DEXTERITY_LABEL" type="Label" parent="Card_RESOLUTION/Background"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 248.0
+offset_right = 123.0
+offset_bottom = 271.0
+text = "DEXTERITY :"
+
+[node name="Control" type="Control" parent="Card_RESOLUTION/Background"]
+anchors_preset = 0
+offset_left = 24.0
+offset_top = 312.0
+offset_right = 168.0
+offset_bottom = 368.0
+
+[node name="HP_LABEL" type="Label" parent="Card_RESOLUTION/Background/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 99.0
+offset_bottom = 23.0
+text = "HP :"
+
+[node name="STAMINA_LABEL" type="Label" parent="Card_RESOLUTION/Background/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 32.0
+offset_right = 99.0
+offset_bottom = 55.0
+text = "STAMINA :"

@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=3 uid="uid://dn2qiejma31v6"]
 
 [ext_resource type="Script" path="res://content/config/actors/HOUND/player.gd" id="1_4fljm"]
-[ext_resource type="Script" path="res://content/config/system/player_character/character_stats.gd" id="2_suw8m"]
+[ext_resource type="Script" path="res://content/config/system/player_character/actions_machines.gd" id="2_kpxqi"]
 [ext_resource type="Script" path="res://content/config/system/player_character/player_actions/Player_Base.gd" id="3_wfvwu"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_manager.gd" id="4_up2nn"]
-[ext_resource type="ArrayMesh" uid="uid://cne0ncocqg2k8" path="res://content/assets/weapons/beginner/Knife.res" id="5_wdi1d"]
+[ext_resource type="ArrayMesh" uid="uid://b7hpnrn3b7axh" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterC.res" id="5_f6te5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
 
@@ -43,11 +43,9 @@ ground_friction = 8
 air_cap = 2.0
 air_move_speed = 700
 
-[node name="Character_Stats" type="Node" parent="." node_paths=PackedStringArray("Player")]
+[node name="Character_Stats" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("2_suw8m")
-Player_Type = 1
-Player = NodePath("..")
+script = ExtResource("2_kpxqi")
 
 [node name="Player_Base" type="Node" parent="Character_Stats" node_paths=PackedStringArray("camera", "Player", "Stats")]
 unique_name_in_owner = true
@@ -89,17 +87,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 [node name="GunCast" type="RayCast3D" parent="head/camera/camera"]
 target_position = Vector3(0, 0, -40)
 
-[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "Raycast_Gun", "GunMesh")]
+[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "Raycast_Gun")]
 script = ExtResource("4_up2nn")
 Player_Character = NodePath("../../../..")
 Raycast_Gun = NodePath("../GunCast")
-GunMesh = NodePath("Player_arms/Mesh")
 
 [node name="Player_arms" type="Node3D" parent="head/camera/camera/Weapon_Manager"]
 
 [node name="Mesh" type="MeshInstance3D" parent="head/camera/camera/Weapon_Manager/Player_arms"]
-transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0.753614, -0.501599, -1)
-mesh = ExtResource("5_wdi1d")
+transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0.753614, -0.4077, -1)
+mesh = ExtResource("5_f6te5")
 
 [node name="Hud" type="CanvasLayer" parent="."]
 layer = 2

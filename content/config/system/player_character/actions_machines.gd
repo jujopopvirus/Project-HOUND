@@ -16,7 +16,6 @@ func change_actions(new_actions : Character_Actions):
 		current_act = new_actions
 		current_act.enter_actions()
 	
-	print(current_act)
 
 func actions_process(delta):
 	if current_act != null:

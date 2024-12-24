@@ -26,5 +26,5 @@ func exit_actions():
 func get_movement_speed() -> float:
 	return RUN_SPD if Input.is_action_pressed("m_sprint") else WALK_SPD
 
-func actions_input_process(delta : float):
+func actions_input_process(_delta : float):
 	pass

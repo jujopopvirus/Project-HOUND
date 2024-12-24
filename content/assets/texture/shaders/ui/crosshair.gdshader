@@ -67,7 +67,7 @@ vec2 transform2(vec2 uv, vec2 translate, float rotate, vec2 scale) {
 	rv.y = -sin(rotate)*uv.x + cos(rotate)*uv.y;
 	rv /= scale;
 	rv += vec2(0.5);
-	return rv;	
+	return rv;
 }
 
 
@@ -96,7 +96,7 @@ float p_o474661_color_a = 1.0;
 float p_o170470_translate_x_3 = 0.2+ shift_x;
 float p_o170470_translate_x_4 = -0.2+ shift_x;
 float p_o170470_scale_y = rectangle_size_x/rectangle_scale;
-// Make Polygons	
+// Make Polygons
 float o170467_0_1_f = shape_polygon((transform2_clamp(transform2((UV), vec2(shift_x*(2.0*1.0-1.0), -shift_y+p_o170470_translate_y*(2.0*1.0-1.0)+spread), (1.0+shift_rotate)*p_o170470_rotate*0.01745329251*(2.0*1.0-1.0), vec2(rectangle_size_x*(2.0*1.0-1.0), p_o170470_scale_y*(2.0*1.0-1.0))))), shape_sides, radius_rectangle*1.0, p_o170467_edge*1.0);
 float o170467_0_1_h = shape_polygon((transform2_clamp(transform2((UV), vec2(shift_x*(2.0*1.0-1.0), -shift_y+p_o170470_translate_y_2*(2.0*1.0-1.0)-spread), (1.0+shift_rotate)*p_o170470_rotate*0.01745329251*(2.0*1.0-1.0), vec2(rectangle_size_x*(2.0*1.0-1.0), p_o170470_scale_y*(2.0*1.0-1.0))))),shape_sides, radius_rectangle*1.0, p_o170467_edge*1.0);
 float o170467_0_1_i = shape_polygon((transform2_clamp(transform2((UV), vec2(p_o170470_translate_x_3*(2.0*1.0-1.0)+spread, -shift_y+p_o170470_translate_y_3*(2.0*1.0-1.0)), (shift_rotate)*p_o170470_rotate_3*0.01745329251*(2.0*1.0-1.0), vec2(rectangle_size_x*(2.0*1.0-1.0), p_o170470_scale_y*(2.0*1.0-1.0))))),shape_sides, radius_rectangle*1.0, p_o170467_edge*1.0);

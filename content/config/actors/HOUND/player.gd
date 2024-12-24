@@ -15,7 +15,10 @@ var autobhopping : bool = true
 var wish_dir = Vector3.ZERO
 @export var CAM_CONTROLLER : Camera3D
 @onready var Camera_Smooth : Node3D = CAM_CONTROLLER.get_parent()
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+@export_category("Player Settings")
+@export var MOUSE_SENSITIVITY := 0.5
 
 @export_group("Movement Settings")
 @export_subgroup("Ground Movements")
@@ -36,8 +39,6 @@ var _player_rotation : Vector3
 var _camera_rotation : Vector3
 
 var _rotation_input : float
-
-@onready var MOUSE_SENSITIVITY = Char_Stats.MOUSE_SENSITIVITY
 var _tilt_input : float
 var tilt_limit := deg_to_rad(85.0)
 
@@ -49,9 +50,6 @@ var _snapped_to_stairs_frame := false
 var _last_frame_was_on_floor = -INF
 
 
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 #endregion
 
 
@@ -96,6 +94,21 @@ func _slide_camera_smooth_back_to_origin(delta):
 	_saved_camera_global_pos = Camera_Smooth.global_position
 	if Camera_Smooth.position.y == 0:
 		_saved_camera_global_pos = null
+
+func _update_playerstats():
+	print(Char_Stats.CODENAME)
+	print(Char_Stats.GENDER)
+	print(str(Char_Stats.Player_Type))
+	print( "Health : " + str(Char_Stats.MAX_HEALTH))
+	print( "Stamina : " + str(Char_Stats.MAX_STAMINA))
+	
+	
+	print("--------------------")
+	print( "SPEED : " + str(Char_Stats.SPEED))
+	print( "STRENGTH : " + str(Char_Stats.STRENGTH))
+	print( "ENDURANCE : " + str(Char_Stats.ENDURANCE))
+	print( "DEXTERITY : " + str(Char_Stats.DEXTERITY))
+
 
 
 #---------------------------------------------------------------------------------------
@@ -152,7 +165,7 @@ func _snap_up_to_stairs(delta) -> bool:
 func get_movement_speed() -> float:
 	return RUN_SPD if Input.is_action_pressed("m_sprint") else WALK_SPD
 
-func clip_velocity(normal:Vector3, overbounce : float, delta : float) -> void:
+func clip_velocity(normal:Vector3, overbounce : float, _delta : float) -> void:
 	var backoff := self.velocity.dot(normal) * overbounce
 	
 	if backoff >= 0:
@@ -203,7 +216,6 @@ func _physics_process(delta):
 	
 	var input_dir = Input.get_vector("m_left", "m_right", "m_forward", "m_backward").normalized()
 	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)
-	var Player_On_Floor = is_on_floor()
 	
 	
 	if is_on_floor() or _snapped_to_stairs_frame:
@@ -217,7 +229,6 @@ func _physics_process(delta):
 	
 	if not _snap_up_to_stairs(delta):
 		
-		Char_Stats.actions_process(delta)
 		
 		move_and_slide()
 		_snap_down_to_stairs()

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=3 format=3 uid="uid://i1nb8anp00lj"]
+
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_qisfy"]
+[ext_resource type="ArrayMesh" uid="uid://cne0ncocqg2k8" path="res://content/assets/weapons/beginner/Knife.res" id="2_4wguw"]
+
+[resource]
+script = ExtResource("1_qisfy")
+Gun_Type = 0
+Gun_Name = "Knife"
+view_model = ExtResource("2_4wguw")
+ammo = "Melee"
+cooldown = 0.2
+sway = 0.1
+automatic = true
+bullet_damage = 50
+spread = 0.0
+max_magazines = 0
+bullet_amnt = 1
+bullet_range = 10
+firing_sounds = Array[AudioStream]([])

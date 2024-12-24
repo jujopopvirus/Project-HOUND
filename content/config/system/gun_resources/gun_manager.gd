@@ -1,38 +1,47 @@
 @icon("res://content/ui/godot_icons/gun_manager.png")
 class_name Weapon_Manager
-
 extends Node3D
+#
 
-var current_wpn : Gun_Resource
+@export var Player_Character : Player_Controller
+@export var Raycast_Gun : RayCast3D
+@export var GunMesh : MeshInstance3D
 
-var number_of_wpn : int = 1
+var Weapon_Slot : Array = [SL_GUN, GLOCK, KNIFE, EMPTY]
 
-@export var Anim_Player : AnimationPlayer
+var current_gun : Gun_Resource = Weapon_Slot[3]
+var can_shoot : bool = true
+var is_reloading : bool = false
+var current_bullets : int = current_gun.max_magazines
 
-@onready var Gun_Melee : Gun_Resource = %Knev
-@onready var Gun_Primary : Gun_Resource = %Shelby
-@onready var Gun_Secondary : Gun_Resource = %"AK-ira"
+const EMPTY = preload("res://content/config/system/gun_resources/Guns_Presets/BeginnerWeapons/empty.tres")
+const GLOCK = preload("res://content/config/system/gun_resources/Guns_Presets/BeginnerWeapons/graylock.tres")
+const KNIFE = preload("res://content/config/system/gun_resources/Guns_Presets/BeginnerWeapons/knife.tres")
+const SL_GUN = preload("res://content/config/system/gun_resources/Guns_Presets/BeginnerWeapons/spitlizard.tres")
 
-func _ready():
-	switched_weapon(Gun_Primary)
+func  _ready() -> void:
+	update_mesh()
 
-func switched_weapon(weapon : Gun_Resource):
-	
-	if current_wpn != null:
-		current_wpn.gun_deactivates()
-	
-	current_wpn = weapon
-	current_wpn.gun_activates()
-
-func _input(event):
-	
+func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("gun_01"):
-		switched_weapon(Gun_Primary)
+		_switch_weapons(0)
 	elif event.is_action_pressed("gun_02"):
-		switched_weapon(Gun_Secondary)
+		_switch_weapons(1)
 	elif event.is_action_pressed("gun_03"):
-		switched_weapon(Gun_Melee)
+		_switch_weapons(2)
+	elif event.is_action_pressed("gun_04"):
+		_switch_weapons(3)
+
+func _switch_weapons(weapon_switch : int) -> void:
+	current_gun = Weapon_Slot[weapon_switch]
+	current_bullets = current_gun.max_magazines
+	if current_gun != null :
+		print("Gun Name : " + current_gun.Gun_Name)
+		print("Current Ammo : " + str(current_bullets))
+		update_mesh(current_gun.view_model)
+	else:
+		update_mesh()
 	
-	if Input.is_action_pressed("w_shoot"):
-		if not Anim_Player.is_playing():
-			current_wpn.gun_fire()
+
+func update_mesh(mesh_replacement : Mesh = null) -> void:
+	GunMesh.mesh = mesh_replacement
