@@ -20,8 +20,8 @@ var WALKING_speed  = SPEED
 var SPRINT_speed = SPEED * 2
 var JUMP_strength : int  = 6
 
-var MAX_HEALTH : int = 0
-var CURRENT_HEALTH : int  = 0 : set = _set_maxhealth
+var MAX_HEALTH : int = 100
+var CURRENT_HEALTH : int  = 100 : set = _set_maxhealth
 func _set_maxhealth(new_hp: int) -> void:
 	CURRENT_HEALTH = clamp(new_hp, 0, MAX_HEALTH)
 @export var MAX_STAMINA : int = 100
@@ -42,20 +42,23 @@ func _ready() -> void:
 func _set_up_character():
 	match Player_Type:
 		Body_Type.SCOUT:
-			update_playerstats("MAX_HEALTH", 60)
-			update_playerstats("SPEED", 8)
-		Body_Type.GUARD:
-			update_playerstats("MAX_HEALTH", 150)
+			update_playerstats("MAX_HEALTH", 60, true)
 			update_playerstats("SPEED", 6)
+		Body_Type.GUARD:
+			update_playerstats("MAX_HEALTH", 150, true)
+			update_playerstats("SPEED", 5)
 		Body_Type.TANK:
-			update_playerstats("MAX_HEALTH", 300)
-			update_playerstats("SPEED", 4)
+			update_playerstats("MAX_HEALTH", 300, true)
+			update_playerstats("SPEED", 3)
 
 
-func update_playerstats(Stats_Replaced : String, InputReplacements : int):
+func update_playerstats(Stats_Replaced : String, InputReplacements : int, ReplaceStats : bool = false):
 	match Stats_Replaced:
 		"MAX_HEALTH":
-			MAX_HEALTH += InputReplacements
+			if ReplaceStats:
+				MAX_HEALTH = InputReplacements
+			else:
+				MAX_HEALTH += InputReplacements
 		"SPEED":
 			SPEED += InputReplacements
 			WALKING_speed  = SPEED

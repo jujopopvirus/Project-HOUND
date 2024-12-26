@@ -98,7 +98,8 @@ func _slide_camera_smooth_back_to_origin(delta):
 func _update_playerstats():
 	print(Char_Stats.CODENAME)
 	print(Char_Stats.GENDER)
-	print(str(Char_Stats.Player_Type))
+	
+	print(Char_Stats.Body_Type.keys()[Char_Stats.Player_Type])
 	print( "Health : " + str(Char_Stats.MAX_HEALTH))
 	print( "Stamina : " + str(Char_Stats.MAX_STAMINA))
 	

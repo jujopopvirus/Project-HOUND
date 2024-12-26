@@ -77,7 +77,7 @@ albedo_texture = ExtResource("6_fku26")
 uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[node name="Node3D" type="Node3D"]
+[node name="Node3D" type="Node3D" groups=["Enemy"]]
 
 [node name="Game_Controller" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
@@ -85,7 +85,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
 [node name="player" parent="Game_Controller" instance=ExtResource("1_hacng")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, -6)
 
-[node name="Enemy_Body" type="CharacterBody3D" parent="Game_Controller"]
+[node name="Enemy_Body" type="CharacterBody3D" parent="Game_Controller" groups=["Enemy"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 33)
 collision_layer = 5
 collision_mask = 5

@@ -4,7 +4,7 @@ extends Resource
 
 enum GUNType {
 	MELEE,
-	REVOLVER,
+	PISTOL,
 	RIFLE,
 	SHOTGUN,
 	EMPTY
@@ -23,7 +23,8 @@ enum GUNType {
 @export_category("Bullet_Stats")
 @export var bullet_damage : int = 15
 @export var spread : float
-@export var max_magazines : int
+@export var max_ammo : int = 12
+var current_ammo : int = max_ammo
 @export var bullet_amnt : int = 1
 @export var bullet_range : int = 40
 
@@ -31,3 +32,9 @@ enum GUNType {
 @export var firing_sounds : Array[AudioStream]
 @export var reload_sounds : AudioStream
 @export var empty_gun_sounds : AudioStream
+
+@export_category("Gun_Animations")
+@export var idle_animation : String
+@export var shoot_animation : String
+@export var equip_animation : String
+@export var reload_animation : String

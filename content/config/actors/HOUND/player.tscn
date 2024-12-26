@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://content/config/actors/HOUND/player.gd" id="1_4fljm"]
 [ext_resource type="Script" path="res://content/config/system/player_character/character_stats.gd" id="2_suw8m"]
-[ext_resource type="Script" path="res://content/config/system/player_character/player_actions/Player_Base.gd" id="3_wfvwu"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_manager.gd" id="4_up2nn"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_system.gd" id="5_mgp6a"]
 [ext_resource type="ArrayMesh" uid="uid://cne0ncocqg2k8" path="res://content/assets/weapons/beginner/Knife.res" id="5_wdi1d"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
@@ -49,13 +49,6 @@ script = ExtResource("2_suw8m")
 Player_Type = 1
 Player = NodePath("..")
 
-[node name="Player_Base" type="Node" parent="Character_Stats" node_paths=PackedStringArray("camera", "Player", "Stats")]
-unique_name_in_owner = true
-script = ExtResource("3_wfvwu")
-camera = NodePath("../../head")
-Player = NodePath("../..")
-Stats = NodePath("..")
-
 [node name="staircast" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
@@ -89,10 +82,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 [node name="GunCast" type="RayCast3D" parent="head/camera/camera"]
 target_position = Vector3(0, 0, -40)
 
-[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "Raycast_Gun", "GunMesh")]
+[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "BulletCast", "GunMesh")]
 script = ExtResource("4_up2nn")
 Player_Character = NodePath("../../../..")
-Raycast_Gun = NodePath("../GunCast")
+BulletCast = NodePath("../GunCast")
 GunMesh = NodePath("Player_arms/Mesh")
 
 [node name="Player_arms" type="Node3D" parent="head/camera/camera/Weapon_Manager"]
@@ -100,6 +93,15 @@ GunMesh = NodePath("Player_arms/Mesh")
 [node name="Mesh" type="MeshInstance3D" parent="head/camera/camera/Weapon_Manager/Player_arms"]
 transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0.753614, -0.501599, -1)
 mesh = ExtResource("5_wdi1d")
+
+[node name="WeaponSystem" type="Node" parent="head/camera/camera/Weapon_Manager" node_paths=PackedStringArray("parent", "CharacterStats")]
+unique_name_in_owner = true
+script = ExtResource("5_mgp6a")
+parent = NodePath("..")
+CharacterStats = NodePath("../../../../../Character_Stats")
+
+[node name="CooldownTimer" type="Timer" parent="head/camera/camera/Weapon_Manager/WeaponSystem"]
+unique_name_in_owner = true
 
 [node name="Hud" type="CanvasLayer" parent="."]
 layer = 2
@@ -150,3 +152,5 @@ grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
+
+[connection signal="timeout" from="head/camera/camera/Weapon_Manager/WeaponSystem/CooldownTimer" to="head/camera/camera/Weapon_Manager/WeaponSystem" method="_on_cooldown_timer_timeout"]
