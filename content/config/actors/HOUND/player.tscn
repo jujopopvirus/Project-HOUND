@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://dn2qiejma31v6"]
+[gd_scene load_steps=11 format=3 uid="uid://dn2qiejma31v6"]
 
 [ext_resource type="Script" path="res://content/config/actors/HOUND/player.gd" id="1_4fljm"]
 [ext_resource type="Script" path="res://content/config/system/player_character/character_stats.gd" id="2_suw8m"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
 [ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_manager.gd" id="4_up2nn"]
-[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_system.gd" id="5_mgp6a"]
 [ext_resource type="ArrayMesh" uid="uid://cne0ncocqg2k8" path="res://content/assets/weapons/beginner/Knife.res" id="5_wdi1d"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
@@ -33,11 +32,11 @@ shader_parameter/scale_resolution = false
 shader_parameter/target_resolution_scale = 3
 shader_parameter/enable_recolor = false
 
-[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("Char_Stats", "CAM_CONTROLLER") groups=["Player"]]
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("Char_Stats", "BulletCast", "CAM_CONTROLLER") groups=["Player"]]
 collision_layer = 3
-collision_mask = 3
 script = ExtResource("1_4fljm")
 Char_Stats = NodePath("Character_Stats")
+BulletCast = NodePath("GunCast")
 CAM_CONTROLLER = NodePath("head/camera/camera")
 ground_friction = 8
 air_cap = 2.0
@@ -48,6 +47,11 @@ unique_name_in_owner = true
 script = ExtResource("2_suw8m")
 Player_Type = 1
 Player = NodePath("..")
+
+[node name="GunCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -40)
+hit_from_inside = true
 
 [node name="staircast" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -79,29 +83,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="gun_viewmodel" type="Node3D" parent="head/camera/camera"]
 
-[node name="GunCast" type="RayCast3D" parent="head/camera/camera"]
-target_position = Vector3(0, 0, -40)
+[node name="Gun_Position" type="Marker3D" parent="head/camera/camera"]
+transform = Transform3D(0.999776, -0.0193117, -0.00860402, 0.0189747, 0.99911, -0.0376622, 0.00932369, 0.0374905, 0.999254, 0, 0, -0.5)
 
-[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "BulletCast", "GunMesh")]
+[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "BulletCast", "GunMesh", "Bullet_Position")]
 script = ExtResource("4_up2nn")
 Player_Character = NodePath("../../../..")
-BulletCast = NodePath("../GunCast")
+BulletCast = NodePath("../../../../GunCast")
 GunMesh = NodePath("Player_arms/Mesh")
+Bullet_Position = NodePath("../Gun_Position")
 
 [node name="Player_arms" type="Node3D" parent="head/camera/camera/Weapon_Manager"]
 
 [node name="Mesh" type="MeshInstance3D" parent="head/camera/camera/Weapon_Manager/Player_arms"]
 transform = Transform3D(-1.5, 0, -2.26494e-07, 0, 1.5, 0, 2.26494e-07, 0, -1.5, 0.753614, -0.501599, -1)
 mesh = ExtResource("5_wdi1d")
-
-[node name="WeaponSystem" type="Node" parent="head/camera/camera/Weapon_Manager" node_paths=PackedStringArray("parent", "CharacterStats")]
-unique_name_in_owner = true
-script = ExtResource("5_mgp6a")
-parent = NodePath("..")
-CharacterStats = NodePath("../../../../../Character_Stats")
-
-[node name="CooldownTimer" type="Timer" parent="head/camera/camera/Weapon_Manager/WeaponSystem"]
-unique_name_in_owner = true
 
 [node name="Hud" type="CanvasLayer" parent="."]
 layer = 2
@@ -152,5 +148,3 @@ grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
-
-[connection signal="timeout" from="head/camera/camera/Weapon_Manager/WeaponSystem/CooldownTimer" to="head/camera/camera/Weapon_Manager/WeaponSystem" method="_on_cooldown_timer_timeout"]

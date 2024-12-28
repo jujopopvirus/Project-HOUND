@@ -5,6 +5,7 @@ extends CharacterBody3D
 
 #region Reference Variables
 @export var Char_Stats : Character_Stats
+@export var BulletCast : RayCast3D
 var SPEED : float
 
 
@@ -79,6 +80,8 @@ func update_cam(delta):
 	
 	_rotation_input = 0.0
 	_tilt_input = 0.0
+	
+	BulletCast.rotation.x = CAM_CONTROLLER.rotation.x
 
 var _saved_camera_global_pos = null
 func _save_camera_pos_for_smoothing():

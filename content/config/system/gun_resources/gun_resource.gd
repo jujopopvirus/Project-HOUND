@@ -38,3 +38,45 @@ var current_ammo : int = max_ammo
 @export var shoot_animation : String
 @export var equip_animation : String
 @export var reload_animation : String
+
+var weapon_manager : Weapon_Manager
+
+var trigger_down = false :
+	set(v):
+		if trigger_down != v:
+			trigger_down = v
+			if trigger_down:
+				on_trigger_down()
+			else:
+				on_trigger_up()
+
+var is_equipped := false :
+	set(v):
+		if is_equipped != v:
+			is_equipped = v
+			if is_equipped:
+				on_equip()
+			else:
+				on_unequip()
+
+func on_process(delta):
+	if trigger_down and automatic:
+		if current_ammo > 0:
+			activate_weapons()
+		else:
+			print("No Ammo")
+
+func on_trigger_down():
+	activate_weapons()
+
+func on_trigger_up():
+	pass
+
+func on_equip():
+	print("equipped")
+
+func on_unequip():
+	pass
+
+func activate_weapons():
+	weapon_manager.weapon_shoot()

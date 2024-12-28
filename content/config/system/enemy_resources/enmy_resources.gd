@@ -22,4 +22,5 @@ func apply_damage(type : String, set_dmg : float) -> float:
 		"Melee":
 			calculated_damage = (set_dmg - Defense)
 	
+	print(calculated_damage)
 	return calculated_damage
