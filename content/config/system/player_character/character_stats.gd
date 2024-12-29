@@ -18,7 +18,7 @@ enum Body_Type {
 var SPEED : int = 0
 var WALKING_speed  = SPEED
 var SPRINT_speed = SPEED * 2
-var JUMP_strength : int  = 6
+var JUMP_strength : int  = 8
 
 var MAX_HEALTH : int = 100
 var CURRENT_HEALTH : int  = 100 : set = _set_maxhealth
@@ -43,13 +43,13 @@ func _set_up_character():
 	match Player_Type:
 		Body_Type.SCOUT:
 			update_playerstats("MAX_HEALTH", 60, true)
-			update_playerstats("SPEED", 6)
+			update_playerstats("SPEED", 10)
 		Body_Type.GUARD:
 			update_playerstats("MAX_HEALTH", 150, true)
-			update_playerstats("SPEED", 5)
+			update_playerstats("SPEED", 8)
 		Body_Type.TANK:
 			update_playerstats("MAX_HEALTH", 300, true)
-			update_playerstats("SPEED", 3)
+			update_playerstats("SPEED", 6)
 
 
 func update_playerstats(Stats_Replaced : String, InputReplacements : int, ReplaceStats : bool = false):

@@ -5,20 +5,22 @@
 
 [resource]
 script = ExtResource("1_yiab8")
-Gun_Type = 2
+Gun_Type = 1
 Gun_Name = "SpitLizard"
 view_model = ExtResource("2_u408y")
 ammo = "Bullet"
 cooldown = 0.2
 sway = 0.1
+fire_rate = 3.0
 automatic = true
-bullet_damage = 20
-spread = 1.5
-max_ammo = 6
+projectile_bullets = false
+bullet_damage = 10
+spread = 8.0
+max_ammo = 120
 bullet_amnt = 3
 bullet_range = 60
 firing_sounds = Array[AudioStream]([])
-idle_animation = ""
-shoot_animation = ""
-equip_animation = ""
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
 reload_animation = ""

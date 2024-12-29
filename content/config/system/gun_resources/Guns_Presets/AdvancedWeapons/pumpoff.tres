@@ -1,24 +1,29 @@
-[gd_resource type="Resource" script_class="Gun_Resource" load_steps=3 format=3 uid="uid://d3gc5fbo6cc6k"]
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=5 format=3 uid="uid://d3gc5fbo6cc6k"]
 
+[ext_resource type="Curve2D" uid="uid://cco8capjub1g0" path="res://content/config/system/gun_resources/Guns_Presets/SprayPatternsPath/PumpOff.tres" id="1_0oxda"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_84xq7"]
+[ext_resource type="PackedScene" uid="uid://cn1u8iok6ag8j" path="res://content/config/system/gun_resources/Guns_Presets/Decals/projectile_decals.tscn" id="2_1t0da"]
 [ext_resource type="ArrayMesh" uid="uid://1ktuq11cmi6e" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterG.res" id="2_vrt3q"]
 
 [resource]
 script = ExtResource("1_84xq7")
 Gun_Type = 3
-Gun_Name = "PumpOff"
+Gun_Name = "Pump Off"
 view_model = ExtResource("2_vrt3q")
 ammo = "Bullet"
 cooldown = 0.2
 sway = 0.1
+fire_rate = 2.0
 automatic = false
+projectile_scene = ExtResource("2_1t0da")
+bullet_patterns = ExtResource("1_0oxda")
 bullet_damage = 20
-spread = 4.0
+spread = 1.0
 max_ammo = 16
 bullet_amnt = 3
 bullet_range = 60
 firing_sounds = Array[AudioStream]([])
-idle_animation = ""
-shoot_animation = ""
-equip_animation = ""
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
 reload_animation = ""

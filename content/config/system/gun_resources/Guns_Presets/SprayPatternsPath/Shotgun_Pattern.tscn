@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://csrc1umvwm7bi"]
+
+[ext_resource type="Curve2D" uid="uid://cco8capjub1g0" path="res://content/config/system/gun_resources/Guns_Presets/SprayPatternsPath/PumpOff.tres" id="1_elbed"]
+
+[node name="Path2D" type="Path2D"]
+curve = ExtResource("1_elbed")

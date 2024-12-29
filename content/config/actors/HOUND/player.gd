@@ -16,7 +16,7 @@ var autobhopping : bool = true
 var wish_dir = Vector3.ZERO
 @export var CAM_CONTROLLER : Camera3D
 @onready var Camera_Smooth : Node3D = CAM_CONTROLLER.get_parent()
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 
 @export_category("Player Settings")
 @export var MOUSE_SENSITIVITY := 0.5

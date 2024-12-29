@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://cn1u8iok6ag8j"]
+
+[ext_resource type="ArrayMesh" uid="uid://cyih3rj8vcg7f" path="res://content/assets/weapons/Kenney_WeaponsPack/Bullet.res" id="1_fwnys"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/Guns_Presets/Decals/projectile_decals.gd" id="1_sxxgs"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fkvmo"]
+radius = 2.71661
+height = 13.0848
+
+[sub_resource type="Curve" id="Curve_1eidj"]
+_data = [Vector2(0, 1), 0.0, -1.98309, 0, 0, Vector2(0.992754, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_dt5jx"]
+curve = SubResource("Curve_1eidj")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3ikb8"]
+angular_velocity_min = 0.449984
+angular_velocity_max = 406.07
+gravity = Vector3(0, 0, 5)
+linear_accel_min = 4.0
+linear_accel_max = 5.0
+damping_min = 0.065
+damping_max = 0.245
+scale_min = 0.1
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_dt5jx")
+color = Color(0.83432, 0.807236, 0.495884, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f00te"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_g7xdf"]
+material = SubResource("StandardMaterial3D_f00te")
+
+[node name="Projectile_Decals" type="RigidBody3D"]
+collision_layer = 0
+collision_mask = 0
+continuous_cd = true
+contact_monitor = true
+script = ExtResource("1_sxxgs")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_mask = 12
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(0.1, 0, 0, 0, -4.37114e-09, -0.1, 0, 0.1, -4.37114e-09, 0, 0, -0.613597)
+shape = SubResource("CapsuleShape3D_fkvmo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(20, -4.76837e-06, -2.08432e-13, 0, -8.74228e-07, 20, -4.76837e-06, -20, -8.74228e-07, 0, 0, -0.633726)
+mesh = ExtResource("1_fwnys")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.1, -5.42101e-23, 1.50996e-08, 1.50996e-08, -4.37114e-09, 0.1, 6.60024e-16, 0.1, 4.37114e-09, -4.20014e-09, -0.0278163, -1.21589e-09)
+amount = 24
+speed_scale = 5.0
+randomness = 0.57
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_3ikb8")
+draw_pass_1 = SubResource("SphereMesh_g7xdf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, -4.37114e-09, -0.1, 0, 0.1, -4.37114e-09, 0, 0, -0.325559)
+shape = SubResource("CapsuleShape3D_fkvmo")
+disabled = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=4 format=3 uid="uid://j7y6nltq3mw1"]
+
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_5x2fg"]
+[ext_resource type="PackedScene" uid="uid://cn1u8iok6ag8j" path="res://content/config/system/gun_resources/Guns_Presets/Decals/projectile_decals.tscn" id="1_k7k1b"]
+[ext_resource type="ArrayMesh" uid="uid://mv5pxqtilt3q" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterH.res" id="3_56blc"]
+
+[resource]
+script = ExtResource("1_5x2fg")
+Gun_Type = 2
+Gun_Name = "Eagle Eye"
+view_model = ExtResource("3_56blc")
+ammo = "Bullet"
+cooldown = 1.0
+sway = 0.1
+fire_rate = 2.0
+automatic = false
+projectile_scene = ExtResource("1_k7k1b")
+projectile_bullets = true
+bullet_damage = 100
+spread = 1.5
+max_ammo = 6
+bullet_amnt = 3
+bullet_range = 400
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = ""

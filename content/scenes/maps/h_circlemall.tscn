@@ -110,47 +110,57 @@ environment = SubResource("Environment_5exe7")
 [node name="Tower" type="CSGCylinder3D" parent="Map"]
 transform = Transform3D(9, 0, 0, 0, 3, 0, 0, 0, 9, 0, 0, 0)
 use_collision = true
+collision_layer = 9
+collision_mask = 9
 radius = 6.0
 height = 12.0
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Map/Tower"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+layers = 9
 radius = 6.0
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="Map/Tower"]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
+layers = 9
 material_override = SubResource("StandardMaterial3D_36axg")
 operation = 2
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Map/Tower/CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+layers = 9
 radius = 6.0
 material = SubResource("StandardMaterial3D_38sjb")
 
 [node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
+layers = 9
 radius = 5.0
 height = 12.0
 material = SubResource("StandardMaterial3D_5nm2l")
 
 [node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.1961, 0)
+layers = 9
 radius = 7.0
 height = 20.0
 material = SubResource("StandardMaterial3D_q3wmd")
 
 [node name="CSGCylinder3D4" type="CSGCylinder3D" parent="Map/Tower/CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.52941, 0)
+layers = 9
 radius = 7.0
 height = 6.0
 material = SubResource("StandardMaterial3D_kqaru")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Map/Tower"]
 transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, 3.05555, -0.00156689, 2.84534)
+layers = 9
 size = Vector3(13, 1, 8)
 material = SubResource("StandardMaterial3D_38sjb")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Map/Tower/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.04481, -4.97827, -17.4656)
+layers = 9
 size = Vector3(26, 1, 20)
 material = SubResource("StandardMaterial3D_38sjb")
 
@@ -168,6 +178,7 @@ material = SubResource("StandardMaterial3D_76u38")
 
 [node name="CSGStairMaker3D2" parent="Map/Tower/CSGBox3D2" instance=ExtResource("8_kx08l")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.00634, -2.25165, -11.9756)
+layers = 9
 material_override = SubResource("StandardMaterial3D_38sjb")
 size = Vector3(18, 5.52832, 11.0104)
 material = SubResource("StandardMaterial3D_38sjb")
@@ -175,6 +186,7 @@ num_stairs = 18
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="Map/Tower"]
 transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, 0.0302777, -1.66667, 1.07027)
+layers = 9
 size = Vector3(14, 1, 17)
 material = SubResource("StandardMaterial3D_38sjb")
 
@@ -194,6 +206,7 @@ num_stairs = 10
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Map/Tower"]
 transform = Transform3D(0.111111, 0, 0, 0, 0.333333, 0, 0, 0, 0.111111, -3.00779, -0.00156689, 2.84534)
+layers = 9
 size = Vector3(13, 1, 8)
 material = SubResource("StandardMaterial3D_38sjb")
 
@@ -211,11 +224,13 @@ material = SubResource("StandardMaterial3D_76u38")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Map/Tower/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.87009, -4.97827, -17.5)
+layers = 9
 size = Vector3(25.6, 1, 20)
 material = SubResource("StandardMaterial3D_38sjb")
 
 [node name="CSGStairMaker3D2" parent="Map/Tower/CSGBox3D3" instance=ExtResource("8_kx08l")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.784491, -2.25165, -11.9756)
+layers = 9
 material_override = SubResource("StandardMaterial3D_38sjb")
 size = Vector3(18, 5.52832, 11.4287)
 material = SubResource("StandardMaterial3D_38sjb")
@@ -223,19 +238,23 @@ num_stairs = 18
 
 [node name="CSGCombiner3D2" type="CSGCombiner3D" parent="Map/Tower"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.5553, -3.88889)
+layers = 9
 material_override = SubResource("StandardMaterial3D_kqaru")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Map/Tower/CSGCombiner3D2"]
+layers = 9
 size = Vector3(1, 0.3, 1)
 material = SubResource("StandardMaterial3D_kqaru")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Map/Tower/CSGCombiner3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.11111, 0.128351, 0)
+layers = 9
 size = Vector3(1, 0.3, 1)
 material = SubResource("StandardMaterial3D_kqaru")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Map/Tower/CSGCombiner3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.11111, 0.128351, 0)
+layers = 9
 size = Vector3(1, 0.3, 1)
 material = SubResource("StandardMaterial3D_kqaru")
 

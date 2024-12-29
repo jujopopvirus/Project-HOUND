@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=3 format=3 uid="uid://32vglduoe4a"]
+
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_4ac6y"]
+[ext_resource type="ArrayMesh" uid="uid://bnd5ifw7ptbo0" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterD.res" id="2_nuq85"]
+
+[resource]
+script = ExtResource("1_4ac6y")
+Gun_Type = 1
+Gun_Name = "OutRunner"
+view_model = ExtResource("2_nuq85")
+ammo = "Bullet"
+cooldown = 0.2
+sway = 0.1
+fire_rate = 5.0
+automatic = true
+projectile_bullets = false
+bullet_damage = 40
+spread = 3.0
+max_ammo = 12
+bullet_amnt = 3
+bullet_range = 60
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = ""
