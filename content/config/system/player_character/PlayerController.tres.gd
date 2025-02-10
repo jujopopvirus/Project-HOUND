@@ -4,7 +4,8 @@ class_name Player_Controller
 extends CharacterBody3D
 
 #region Reference Variables
-@export var Char_Stats : Character_Stats
+@export var Char_Stats : In_Game_PlayerStats
+@export var _Weapon_Manager : Weapon_Manager
 @export var BulletCast : RayCast3D
 var SPEED : float
 
@@ -17,9 +18,6 @@ var wish_dir = Vector3.ZERO
 @export var CAM_CONTROLLER : Camera3D
 @onready var Camera_Smooth : Node3D = CAM_CONTROLLER.get_parent()
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
-
-@export_category("Player Settings")
-@export var MOUSE_SENSITIVITY := 0.5
 
 @export_group("Movement Settings")
 @export_subgroup("Ground Movements")
@@ -42,6 +40,7 @@ var _camera_rotation : Vector3
 var _rotation_input : float
 var _tilt_input : float
 var tilt_limit := deg_to_rad(85.0)
+var MOUSE_SENSITIVITY = GlobalGameManager.MOUSE_SENSITIVTY
 
 
 @onready var stair_lower : RayCast3D = %lowercast
@@ -56,10 +55,13 @@ var _last_frame_was_on_floor = -INF
 
 
 func _ready():
+	GlobalGameManager._Player = self
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
+
 
 func _unhandled_input(event):
+	MOUSE_SENSITIVITY = GlobalGameManager.MOUSE_SENSITIVTY
+	
 	_mouse_input = event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	if _mouse_input:
 		_rotation_input = -event.relative.x
@@ -99,10 +101,6 @@ func _slide_camera_smooth_back_to_origin(delta):
 		_saved_camera_global_pos = null
 
 func _update_playerstats():
-	print(Char_Stats.CODENAME)
-	print(Char_Stats.GENDER)
-	
-	print(Char_Stats.Body_Type.keys()[Char_Stats.Player_Type])
 	print( "Health : " + str(Char_Stats.MAX_HEALTH))
 	print( "Stamina : " + str(Char_Stats.MAX_STAMINA))
 	
@@ -112,6 +110,9 @@ func _update_playerstats():
 	print( "STRENGTH : " + str(Char_Stats.STRENGTH))
 	print( "ENDURANCE : " + str(Char_Stats.ENDURANCE))
 	print( "DEXTERITY : " + str(Char_Stats.DEXTERITY))
+	
+	print(Char_Stats.CODENAME)
+	print(Char_Stats.Player_Type)
 
 
 

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=4 format=3 uid="uid://bgquq5mdiy7mi"]
+
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_ajjlg"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="2_2fl0p"]
+[ext_resource type="ArrayMesh" uid="uid://b5llg27vob4d4" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterM.res" id="3_pcoss"]
+
+[resource]
+script = ExtResource("2_2fl0p")
+Gun_Type = 1
+Gun_Name = "Graylock"
+view_model = ExtResource("3_pcoss")
+ammo = "Bullet"
+sway = 0.1
+automatic = false
+max_fire_rate = 100.0
+bullet_decals = ExtResource("1_ajjlg")
+bullet_damage = 80
+spread = 1.0
+max_ammo = 6
+bullet_range = 120
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = "weapon_reload"

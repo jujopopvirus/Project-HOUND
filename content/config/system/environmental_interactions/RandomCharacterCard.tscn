@@ -110,3 +110,12 @@ offset_right = 123.0
 offset_bottom = -153.0
 text = "Role"
 horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+offset_left = -72.0
+offset_top = 328.0
+offset_right = 72.0
+offset_bottom = 368.0
+text = "RECRUIT"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

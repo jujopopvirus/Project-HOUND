@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=4 format=3 uid="uid://b5bc0477xl2vk"]
+
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_201cw"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="2_bnm40"]
+[ext_resource type="ArrayMesh" uid="uid://vofbvmyup315" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterI.res" id="3_cme53"]
+
+[resource]
+script = ExtResource("2_bnm40")
+Gun_Type = 1
+Gun_Name = "SpitLizard"
+view_model = ExtResource("3_cme53")
+ammo = "Bullet"
+sway = 0.1
+automatic = true
+max_fire_rate = 100.0
+bullet_decals = ExtResource("1_201cw")
+bullet_damage = 10
+spread = 2.0
+max_ammo = 36
+bullet_range = 90
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = "weapon_reload"

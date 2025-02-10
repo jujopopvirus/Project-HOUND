@@ -1,0 +1,632 @@
+[gd_scene load_steps=17 format=3 uid="uid://dn2qiejma31v6"]
+
+[ext_resource type="ArrayMesh" uid="uid://mv5pxqtilt3q" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterH.res" id="4_qukfe"]
+[ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
+[ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_manager.gd" id="4_up2nn"]
+
+[sub_resource type="GDScript" id="GDScript_fs5hf"]
+script/source = "@icon(\"res://content/ui/godot_icons/character_stats.svg\")
+class_name Player_Controller
+
+extends CharacterBody3D
+
+#region Reference Variables
+@export var Char_Stats : In_Game_Character
+@export var BulletCast : RayCast3D
+var SPEED : float
+
+
+var autobhopping : bool = true
+@onready var RUN_SPD = Char_Stats.SPRINT_speed
+@onready var WALK_SPD = Char_Stats.WALKING_speed
+@onready var JUMP_VELOCITY = Char_Stats.JUMP_strength
+var wish_dir = Vector3.ZERO
+@export var CAM_CONTROLLER : Camera3D
+@onready var Camera_Smooth : Node3D = CAM_CONTROLLER.get_parent()
+var gravity = ProjectSettings.get_setting(\"physics/3d/default_gravity\") * 2
+
+@export_category(\"Player Settings\")
+@export var MOUSE_SENSITIVITY := 0.5
+
+@export_group(\"Movement Settings\")
+@export_subgroup(\"Ground Movements\")
+@export var ground_deccel := 10.05
+@export var ground_accel := 14.0
+@export var ground_friction := 4
+
+@export_subgroup(\"Air Movements\")
+@export var air_cap := 0.85
+@export var air_accel := 860.0
+@export var air_move_speed := 560
+
+
+var _mouse_input : bool = false
+var _mouse_rotation : Vector3
+
+var _player_rotation : Vector3
+var _camera_rotation : Vector3
+
+var _rotation_input : float
+var _tilt_input : float
+var tilt_limit := deg_to_rad(85.0)
+
+
+@onready var stair_lower : RayCast3D = %lowercast
+@onready var stair_upper : RayCast3D = %uppercast
+const MAX_STEP_HEIGHT = 0.7
+var _snapped_to_stairs_frame := false
+var _last_frame_was_on_floor = -INF
+
+
+#endregion
+
+
+
+func _ready():
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+
+func _unhandled_input(event):
+	_mouse_input = event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
+	if _mouse_input:
+		_rotation_input = -event.relative.x
+		_tilt_input = -event.relative.y
+
+func update_cam(delta):
+	_mouse_rotation.x += (_tilt_input * MOUSE_SENSITIVITY * 0.25) *  delta
+	_mouse_rotation.x = clamp(_mouse_rotation.x, -tilt_limit, tilt_limit)
+	_mouse_rotation.y += (_rotation_input * MOUSE_SENSITIVITY * 0.25) * delta
+	
+	_player_rotation = Vector3(0.0, _mouse_rotation.y, 0.0)
+	_camera_rotation = Vector3(_mouse_rotation.x, 0.0 , 0.0)
+	
+	CAM_CONTROLLER.transform.basis = Basis.from_euler(_camera_rotation)
+	CAM_CONTROLLER.rotation.z = 0.0
+	
+	global_transform.basis = Basis.from_euler(_player_rotation)
+	
+	_rotation_input = 0.0
+	_tilt_input = 0.0
+	
+	BulletCast.rotation.x = CAM_CONTROLLER.rotation.x
+
+var _saved_camera_global_pos = null
+func _save_camera_pos_for_smoothing():
+	if _saved_camera_global_pos == null:
+		_saved_camera_global_pos = Camera_Smooth.global_position
+
+func _slide_camera_smooth_back_to_origin(delta):
+	if _saved_camera_global_pos == null: return
+	Camera_Smooth.global_position.y = _saved_camera_global_pos.y
+	Camera_Smooth.position.y = clampf(Camera_Smooth.position.y, -0.7, 0.7)
+	var move_amount = max(self.velocity.length() * delta, WALK_SPD/2 * delta)
+	Camera_Smooth.position.y = move_toward(Camera_Smooth.position.y, 0.0, move_amount)
+	_saved_camera_global_pos = Camera_Smooth.global_position
+	if Camera_Smooth.position.y == 0:
+		_saved_camera_global_pos = null
+
+func _update_playerstats():
+	print(Char_Stats.CODENAME)
+	print(Char_Stats.GENDER)
+	
+	print(Char_Stats.Body_Type.keys()[Char_Stats.Player_Type])
+	print( \"Health : \" + str(Char_Stats.MAX_HEALTH))
+	print( \"Stamina : \" + str(Char_Stats.MAX_STAMINA))
+	
+	
+	print(\"--------------------\")
+	print( \"SPEED : \" + str(Char_Stats.SPEED))
+	print( \"STRENGTH : \" + str(Char_Stats.STRENGTH))
+	print( \"ENDURANCE : \" + str(Char_Stats.ENDURANCE))
+	print( \"DEXTERITY : \" + str(Char_Stats.DEXTERITY))
+
+
+
+#---------------------------------------------------------------------------------------
+#region Character_Movements
+
+func is_surface_too_steep(normal :  Vector3) -> bool:
+	return normal.angle_to(Vector3.UP) > self.floor_max_angle
+
+func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
+	if not result : result = PhysicsTestMotionResult3D.new()
+	var params = PhysicsTestMotionParameters3D.new()
+	params.from = from
+	params.motion = motion
+	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
+
+func _snap_down_to_stairs() -> void:
+	var did_snap := false
+	var floor_below : bool = stair_lower.is_colliding() and not is_surface_too_steep(stair_lower.get_collision_normal())
+	var was_on_floor_last_frame = Engine.get_physics_frames() - _last_frame_was_on_floor == 1
+	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_frame) and floor_below:
+		var body_test_result = PhysicsTestMotionResult3D.new()
+		
+		if _run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			_save_camera_pos_for_smoothing()
+			var translate_y = body_test_result.get_travel().y
+			self.position.y += translate_y
+			apply_floor_snap()
+			did_snap = true
+	_snapped_to_stairs_frame = did_snap
+
+func _snap_up_to_stairs(delta) -> bool:
+	if not is_on_floor() and not _snapped_to_stairs_frame : return false
+	
+	if self.velocity.y > 0 or (self.velocity * Vector3(1,0,1)).length() == 0: return false
+	var expected_motion = self.velocity * Vector3(1,0,1) * delta
+	var step_pos_with_clearance = self.global_transform.translated(expected_motion + Vector3(0, MAX_STEP_HEIGHT * 2, 0))
+	
+	var down_check = PhysicsTestMotionResult3D.new()
+	if (_run_body_test_motion(step_pos_with_clearance, Vector3(0, -MAX_STEP_HEIGHT * 2, 0), down_check)
+	and (down_check.get_collider().is_class(\"StaticBody3D\") or down_check.get_collider().is_class(\"CSGShape3D\"))):
+		var step_height = ((step_pos_with_clearance.origin + down_check.get_travel()) - self.global_position).y
+		
+		if step_height > MAX_STEP_HEIGHT or step_height <= 0.01 or (down_check.get_collision_point() - self.global_position).y > MAX_STEP_HEIGHT : return false
+		stair_upper.global_position = down_check.get_collision_point() + Vector3(0, MAX_STEP_HEIGHT, 0) + expected_motion.normalized() * 0.1
+		stair_upper.force_raycast_update()
+		if stair_upper.is_colliding() and not is_surface_too_steep(stair_upper.get_collision_normal()):
+			_save_camera_pos_for_smoothing()
+			self.global_position = step_pos_with_clearance.origin + down_check.get_travel()
+			apply_floor_snap()
+			_snapped_to_stairs_frame = true
+			return true
+	return false
+
+func get_movement_speed() -> float:
+	return RUN_SPD if Input.is_action_pressed(\"m_sprint\") else WALK_SPD
+
+func clip_velocity(normal:Vector3, overbounce : float, _delta : float) -> void:
+	var backoff := self.velocity.dot(normal) * overbounce
+	
+	if backoff >= 0:
+		return
+	
+	var change := normal * backoff
+	velocity -= change
+	var adjust := self.velocity.dot(normal)
+	
+	if adjust < 0.0:
+		self.velocity -= normal * adjust
+
+func handle_gravity(delta : float) -> void:
+	velocity.y -= gravity * delta
+	
+	var cur_speed_in_wish_dir = self.velocity.dot(wish_dir)
+	var capped_speed = min((air_move_speed * wish_dir).length(),air_cap)
+	var add_speed_till_cap = capped_speed - cur_speed_in_wish_dir
+	
+	if add_speed_till_cap > 0:
+		var accel_speed = air_accel * air_move_speed * delta
+		accel_speed = min(accel_speed, add_speed_till_cap)
+		self.velocity += accel_speed * wish_dir
+	
+	if is_on_wall():
+		
+		if is_surface_too_steep(get_wall_normal()):
+			self.motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
+		else:
+			self.motion_mode = CharacterBody3D.MOTION_MODE_GROUNDED
+		
+		clip_velocity(get_wall_normal(), 1, delta)
+
+func handle_ground_movement(delta : float) -> void:
+	velocity.x = wish_dir.x * get_movement_speed()
+	velocity.z = wish_dir.z * get_movement_speed()
+	
+	var cur_speed_in_wish_dir = self.velocity.dot(wish_dir)
+	var add_speed_till_cap = get_movement_speed() - cur_speed_in_wish_dir
+	
+	if add_speed_till_cap >0:
+		var accel_speed = ground_accel * delta * get_movement_speed()
+		accel_speed = min(accel_speed, add_speed_till_cap)
+		self.velocity += accel_speed * wish_dir
+
+func _physics_process(delta):
+	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
+	
+	var input_dir = Input.get_vector(\"m_left\", \"m_right\", \"m_forward\", \"m_backward\").normalized()
+	wish_dir = self.global_transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)
+	
+	
+	if is_on_floor() or _snapped_to_stairs_frame:
+		if Input.is_action_just_pressed(\"m_jump\") or (autobhopping and Input.is_action_pressed(\"m_jump\")):
+			var jump_boost = get_movement_speed() / 6
+			jump_boost = JUMP_VELOCITY + jump_boost
+			player_jump(jump_boost)
+		handle_ground_movement(delta)
+	else:
+		handle_gravity(delta)
+	
+	if not _snap_up_to_stairs(delta):
+		
+		
+		move_and_slide()
+		_snap_down_to_stairs()
+	
+	_slide_camera_smooth_back_to_origin(delta)
+	update_cam(delta)
+
+
+#endregion
+
+
+#---------------------
+#Player Commands
+func player_jump(Jump_Strength : float) -> void:
+	self.velocity.y += Jump_Strength
+"
+
+[sub_resource type="GDScript" id="GDScript_bpyvt"]
+script/source = "@icon(\"res://content/ui/godot_icons/character_stats2.svg\")
+class_name In_Game_Character
+
+extends Node
+
+@export var CODENAME : String = \"Doe\"
+@export var GENDER : String = \"Neutral\"
+
+@export_category(\"Player Stats\")
+enum Body_Type {
+	SCOUT, #80 HP, 8 SPEED
+	GUARD, #150 HP, 6 SPEED
+	TANK #300 HP, 4 SPEED
+}
+
+@export var Player_Type : Body_Type
+
+var SPEED : int = 0
+var WALKING_speed  = SPEED
+var SPRINT_speed = SPEED * 2
+var JUMP_strength : int  = 8
+
+var MAX_HEALTH : int = 100
+var CURRENT_HEALTH : int  = 100 : set = _set_maxhealth
+func _set_maxhealth(new_hp: int) -> void:
+	CURRENT_HEALTH = clamp(new_hp, 0, MAX_HEALTH)
+@export var MAX_STAMINA : int = 100
+
+@export var STRENGTH : int = 6
+@export var DEXTERITY : int = 6
+@export var ENDURANCE : int = 6
+
+@export_category(\"Player Settings\")
+@export var MOUSE_SENSITIVITY := 0.5
+@export var Player : Player_Controller
+
+func _ready() -> void:
+	_set_up_character()
+	Player._update_playerstats()
+
+
+func _set_up_character():
+	match Player_Type:
+		Body_Type.SCOUT:
+			update_playerstats(\"MAX_HEALTH\", 60, true)
+			update_playerstats(\"SPEED\", 10)
+		Body_Type.GUARD:
+			update_playerstats(\"MAX_HEALTH\", 150, true)
+			update_playerstats(\"SPEED\", 8)
+		Body_Type.TANK:
+			update_playerstats(\"MAX_HEALTH\", 300, true)
+			update_playerstats(\"SPEED\", 6)
+
+
+func update_playerstats(Stats_Replaced : String, InputReplacements : int, ReplaceStats : bool = false):
+	match Stats_Replaced:
+		\"MAX_HEALTH\":
+			if ReplaceStats:
+				MAX_HEALTH = InputReplacements
+			else:
+				MAX_HEALTH += InputReplacements
+		\"SPEED\":
+			SPEED += InputReplacements
+			WALKING_speed  = SPEED
+			SPRINT_speed = SPEED * 2
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_yspxw"]
+
+[sub_resource type="Animation" id="Animation_bpnf5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_sc6m7"]
+resource_name = "gun_shoot"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-0.242985, -3.14159, -3.74292e-08), Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1), Vector3(0.753614, -0.613274, -0.941468), Vector3(0.753614, -0.699837, -1)]
+}
+
+[sub_resource type="Animation" id="Animation_8yj8p"]
+resource_name = "weapon_deploy"
+length = 0.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.753614, -0.12944, -0.356355), Vector3(0.753614, -0.940513, -0.972343), Vector3(0.753614, -0.699837, -1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-1.54238, -3.14159, -5.31271e-06), Vector3(0.417514, -3.14159, -3.01288e-08), Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_oujw5"]
+resource_name = "weapon_idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1)]
+}
+
+[sub_resource type="Animation" id="Animation_4oew6"]
+resource_name = "weapon_reload"
+length = 0.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-6.28319, -3.14159, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"Recover_Ammo"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_si8qo"]
+_data = {
+"RESET": SubResource("Animation_bpnf5"),
+"gun_shoot": SubResource("Animation_sc6m7"),
+"weapon_deploy": SubResource("Animation_8yj8p"),
+"weapon_idle": SubResource("Animation_oujw5"),
+"weapon_reload": SubResource("Animation_4oew6")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vu2hw"]
+shader = ExtResource("4_t1bn0")
+shader_parameter/shift_x = 0.0
+shader_parameter/shift_y = 0.0
+shader_parameter/shift_rotate = 0.0
+shader_parameter/crosshair_color = Color(1, 1, 1, 1)
+shader_parameter/spread = 0.07
+shader_parameter/shape_sides = 4.0
+shader_parameter/radius_rectangle = 0.2
+shader_parameter/rectangle_size_x = 1.0
+shader_parameter/rectangle_scale = 3.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5cgq1"]
+shader = ExtResource("4_snuhn")
+shader_parameter/change_color_depth = false
+shader_parameter/target_color_depth = 5
+shader_parameter/dithering = true
+shader_parameter/scale_resolution = false
+shader_parameter/target_resolution_scale = 3
+shader_parameter/enable_recolor = false
+
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("Char_Stats", "BulletCast", "CAM_CONTROLLER") groups=["Player"]]
+collision_layer = 3
+script = SubResource("GDScript_fs5hf")
+Char_Stats = NodePath("Character_Stats")
+BulletCast = NodePath("GunCast")
+CAM_CONTROLLER = NodePath("head/camera/camera")
+ground_friction = 8
+air_cap = 4.0
+air_accel = 600.0
+air_move_speed = 200
+
+[node name="Character_Stats" type="Node" parent="." node_paths=PackedStringArray("Player")]
+unique_name_in_owner = true
+script = SubResource("GDScript_bpyvt")
+Player_Type = 1
+Player = NodePath("..")
+
+[node name="GunCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -40)
+hit_from_inside = true
+
+[node name="Bullet_Lookat" type="Marker3D" parent="GunCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
+
+[node name="staircast" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="lowercast" type="RayCast3D" parent="staircast"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0089, 0)
+target_position = Vector3(0, -1.2, 0)
+
+[node name="uppercast" type="RayCast3D" parent="staircast"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0706953, -0.830603)
+
+[node name="collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_kx1qt")
+
+[node name="mesh" type="MeshInstance3D" parent="collision"]
+visible = false
+mesh = SubResource("CapsuleMesh_yspxw")
+skeleton = NodePath("../..")
+
+[node name="head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="camera" type="Node3D" parent="head"]
+
+[node name="camera" type="Camera3D" parent="head/camera"]
+
+[node name="gun_viewmodel" type="Node3D" parent="head/camera/camera"]
+
+[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "BulletCast", "GunMesh", "Bullet_Position", "Bullet_LookAt")]
+script = ExtResource("4_up2nn")
+Player_Character = NodePath("../../../..")
+BulletCast = NodePath("../../../../GunCast")
+GunMesh = NodePath("Player_arms/Mesh")
+Bullet_Position = NodePath("Gun_Position")
+Bullet_LookAt = NodePath("../../../../GunCast/Bullet_Lookat")
+
+[node name="Gun_Position" type="Marker3D" parent="head/camera/camera/Weapon_Manager"]
+transform = Transform3D(0.999776, -0.0193117, -0.00860402, 0.0191508, 0.999647, -0.0184023, 0.00895637, 0.0182334, 0.999794, 1.13974, -0.69085, -2.05663)
+
+[node name="Player_arms" type="Node3D" parent="head/camera/camera/Weapon_Manager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40221, 0, -0.193128)
+
+[node name="Mesh" type="MeshInstance3D" parent="head/camera/camera/Weapon_Manager/Player_arms"]
+transform = Transform3D(-1.5, 0, -3.80277e-06, 0, 1.5, 0, 3.80277e-06, 0, -1.5, 0.753614, -0.699837, -1)
+mesh = ExtResource("4_qukfe")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="head/camera/camera/Weapon_Manager"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_si8qo")
+}
+
+[node name="Hud" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="crosshair" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="Hud/crosshair"]
+material = SubResource("ShaderMaterial_vu2hw")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.493968, 0.418391, 0.459039, 1)
+
+[node name="hud" type="Control" parent="Hud"]
+z_index = 1
+material = SubResource("ShaderMaterial_5cgq1")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -11.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true

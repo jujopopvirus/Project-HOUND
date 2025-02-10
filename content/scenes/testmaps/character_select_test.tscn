@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://ccq7csc057b53"]
+[gd_scene load_steps=3 format=3 uid="uid://ccq7csc057b53"]
 
-[ext_resource type="PackedScene" uid="uid://cw6kpqqgbjo17" path="res://content/config/system/player_character/RandomCharacterCard.tscn" id="2_3h5dr"]
+[ext_resource type="Script" path="res://content/config/system/global/CharacterSelectScript.gd" id="1_5mfne"]
+[ext_resource type="PackedScene" uid="uid://cw6kpqqgbjo17" path="res://content/config/system/environmental_interactions/RandomCharacterCard.tscn" id="2_3h5dr"]
 
 [node name="CHARACTER_SELECT" type="Node2D"]
+script = ExtResource("1_5mfne")
 
 [node name="Canvas" type="CanvasLayer" parent="."]
 
@@ -17,14 +19,19 @@ scale = Vector2(0.9, 0.9)
 pivot_offset = Vector2(640, 380)
 metadata/_edit_lock_ = true
 
-[node name="RANDOM_CHARACTER_GENERATOR" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
+[node name="Character_01" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
 position = Vector2(240, 176.667)
 
-[node name="RANDOM_CHARACTER_GENERATOR2" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
+[node name="Character_02" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
 position = Vector2(516.667, 176.667)
 
-[node name="RANDOM_CHARACTER_GENERATOR3" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
+[node name="Character_03" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
 position = Vector2(781.111, 176.667)
 
-[node name="RANDOM_CHARACTER_GENERATOR4" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
+[node name="Character_04" parent="Canvas/Hud" instance=ExtResource("2_3h5dr")]
 position = Vector2(1038.89, 176.667)
+
+[connection signal="Recruit_Character" from="Canvas/Hud/Character_01" to="." method="_on_character_01_recruit_character"]
+[connection signal="Recruit_Character" from="Canvas/Hud/Character_02" to="." method="_on_character_02_recruit_character"]
+[connection signal="Recruit_Character" from="Canvas/Hud/Character_03" to="." method="_on_character_03_recruit_character"]
+[connection signal="Recruit_Character" from="Canvas/Hud/Character_04" to="." method="_on_character_04_recruit_character"]

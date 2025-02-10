@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjam3v3p6vx4g"]
+
+[ext_resource type="Script" path="res://content/config/system/global/game_manager.gd" id="1_aa12c"]
+
+[node name="GameManager" type="Node"]
+script = ExtResource("1_aa12c")
+MOUSE_SENSITIVTY = 0.35

@@ -1,29 +1,29 @@
-[gd_resource type="Resource" script_class="Gun_Resource" load_steps=5 format=3 uid="uid://d3gc5fbo6cc6k"]
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=6 format=3 uid="uid://d3gc5fbo6cc6k"]
 
-[ext_resource type="Curve2D" uid="uid://cco8capjub1g0" path="res://content/config/system/gun_resources/Guns_Presets/SprayPatternsPath/PumpOff.tres" id="1_0oxda"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_84xq7"]
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_b2l55"]
 [ext_resource type="PackedScene" uid="uid://cn1u8iok6ag8j" path="res://content/config/system/gun_resources/Guns_Presets/Decals/projectile_decals.tscn" id="2_1t0da"]
-[ext_resource type="ArrayMesh" uid="uid://1ktuq11cmi6e" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterG.res" id="2_vrt3q"]
+[ext_resource type="Curve2D" uid="uid://8of7pbraq33" path="res://content/config/system/gun_resources/Guns_Presets/SprayPatternsPath/SpitLizardPattern.tres" id="2_t4h3f"]
+[ext_resource type="ArrayMesh" uid="uid://bijiumn4jama8" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterL.res" id="5_q5ltd"]
 
 [resource]
 script = ExtResource("1_84xq7")
 Gun_Type = 3
 Gun_Name = "Pump Off"
-view_model = ExtResource("2_vrt3q")
+view_model = ExtResource("5_q5ltd")
 ammo = "Bullet"
-cooldown = 0.2
 sway = 0.1
-fire_rate = 2.0
 automatic = false
+max_fire_rate = 50.0
 projectile_scene = ExtResource("2_1t0da")
-bullet_patterns = ExtResource("1_0oxda")
-bullet_damage = 20
+bullet_patterns = ExtResource("2_t4h3f")
+bullet_decals = ExtResource("1_b2l55")
+bullet_damage = 30
 spread = 1.0
-max_ammo = 16
-bullet_amnt = 3
+max_ammo = 12
 bullet_range = 60
 firing_sounds = Array[AudioStream]([])
 idle_animation = "weapon_idle"
 shoot_animation = "gun_shoot"
 equip_animation = "weapon_deploy"
-reload_animation = ""
+reload_animation = "weapon_reload"

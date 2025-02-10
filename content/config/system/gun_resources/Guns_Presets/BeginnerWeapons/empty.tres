@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="Gun_Resource" load_steps=2 format=3 uid="uid://b76o0bbx5v5cd"]
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=3 format=3 uid="uid://b76o0bbx5v5cd"]
 
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_6bmlq"]
 [ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="1_reayh"]
 
 [resource]
@@ -7,18 +8,16 @@ script = ExtResource("1_reayh")
 Gun_Type = 4
 Gun_Name = "Empty"
 ammo = "EMPTY"
-cooldown = 0.1
 sway = 0.1
-fire_rate = 2.0
 automatic = false
-projectile_bullets = false
+max_fire_rate = 100.0
+bullet_decals = ExtResource("1_6bmlq")
 bullet_damage = 0
 spread = 0.0
 max_ammo = 12
-bullet_amnt = 0
 bullet_range = 0
 firing_sounds = Array[AudioStream]([])
-idle_animation = ""
-shoot_animation = ""
-equip_animation = ""
-reload_animation = ""
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = "weapon_reload"

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=6 format=3 uid="uid://3pr8gv5d78om"]
+
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_sajra"]
+[ext_resource type="Curve2D" uid="uid://cmnxweskxx8aq" path="res://content/config/system/gun_resources/Guns_Presets/SprayPatternsPath/PorcupinePattern.tres" id="2_kpf0x"]
+[ext_resource type="PackedScene" uid="uid://cn1u8iok6ag8j" path="res://content/config/system/gun_resources/Guns_Presets/Decals/projectile_decals.tscn" id="3_tmgc2"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="4_r0j5h"]
+[ext_resource type="ArrayMesh" uid="uid://baba0kl88it6o" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterJ.res" id="5_a8qgf"]
+
+[resource]
+script = ExtResource("4_r0j5h")
+Gun_Type = 3
+Gun_Name = "Porcupine"
+view_model = ExtResource("5_a8qgf")
+ammo = "Bullet"
+sway = 0.1
+automatic = true
+max_fire_rate = 160.0
+projectile_scene = ExtResource("3_tmgc2")
+bullet_patterns = ExtResource("2_kpf0x")
+bullet_decals = ExtResource("1_sajra")
+bullet_damage = 25
+spread = 1.0
+max_ammo = 6
+bullet_range = 60
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = "weapon_reload"

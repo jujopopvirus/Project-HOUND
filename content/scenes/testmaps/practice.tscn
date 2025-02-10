@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://hdmihs8o6f52" path="res://content/assets/texture/kenney_texture/texture_03.png" id="1_3rfob"]
 [ext_resource type="Texture2D" uid="uid://dvepimpklxo6j" path="res://content/assets/texture/kenney_texture/orangegrid.tga" id="2_0n7xn"]
-[ext_resource type="PackedScene" uid="uid://dn2qiejma31v6" path="res://content/config/actors/HOUND/player.tscn" id="3_3xh71"]
+[ext_resource type="PackedScene" uid="uid://dn2qiejma31v6" path="res://content/config/system/player_character/player.tscn" id="3_3xh71"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fe8x8"]
 sky_top_color = Color(0.0901961, 0.117647, 0.152941, 1)

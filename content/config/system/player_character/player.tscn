@@ -1,0 +1,308 @@
+[gd_scene load_steps=17 format=3 uid="uid://dn2qiejma31v6"]
+
+[ext_resource type="Script" path="res://content/config/system/player_character/PlayerController.tres.gd" id="1_bav1d"]
+[ext_resource type="Script" path="res://content/config/system/player_character/InGamePlayerStats.gd" id="2_k1h80"]
+[ext_resource type="ArrayMesh" uid="uid://mv5pxqtilt3q" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterH.res" id="4_qukfe"]
+[ext_resource type="Shader" path="res://content/assets/texture/shaders/Kuwahara.gdshader" id="4_snuhn"]
+[ext_resource type="Shader" path="res://content/assets/texture/shaders/ui/crosshair.gdshader" id="4_t1bn0"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_manager.gd" id="4_up2nn"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kx1qt"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_yspxw"]
+
+[sub_resource type="Animation" id="Animation_bpnf5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_sc6m7"]
+resource_name = "gun_shoot"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-0.242985, -3.14159, -3.74292e-08), Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1), Vector3(0.753614, -0.613274, -0.941468), Vector3(0.753614, -0.699837, -1)]
+}
+
+[sub_resource type="Animation" id="Animation_8yj8p"]
+resource_name = "weapon_deploy"
+length = 0.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.753614, -0.12944, -0.356355), Vector3(0.753614, -0.940513, -0.972343), Vector3(0.753614, -0.699837, -1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-1.54238, -3.14159, -5.31271e-06), Vector3(0.417514, -3.14159, -3.01288e-08), Vector3(0, -3.14159, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_oujw5"]
+resource_name = "weapon_idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Player_arms/Mesh:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.753614, -0.699837, -1)]
+}
+
+[sub_resource type="Animation" id="Animation_4oew6"]
+resource_name = "weapon_reload"
+length = 0.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player_arms/Mesh:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, -3.14159, 0), Vector3(-6.28319, -3.14159, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"Recover_Ammo"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_si8qo"]
+_data = {
+"RESET": SubResource("Animation_bpnf5"),
+"gun_shoot": SubResource("Animation_sc6m7"),
+"weapon_deploy": SubResource("Animation_8yj8p"),
+"weapon_idle": SubResource("Animation_oujw5"),
+"weapon_reload": SubResource("Animation_4oew6")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vu2hw"]
+shader = ExtResource("4_t1bn0")
+shader_parameter/shift_x = 0.0
+shader_parameter/shift_y = 0.0
+shader_parameter/shift_rotate = 0.0
+shader_parameter/crosshair_color = Color(1, 1, 1, 1)
+shader_parameter/spread = 0.07
+shader_parameter/shape_sides = 4.0
+shader_parameter/radius_rectangle = 0.2
+shader_parameter/rectangle_size_x = 1.0
+shader_parameter/rectangle_scale = 3.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5cgq1"]
+shader = ExtResource("4_snuhn")
+shader_parameter/change_color_depth = false
+shader_parameter/target_color_depth = 5
+shader_parameter/dithering = true
+shader_parameter/scale_resolution = false
+shader_parameter/target_resolution_scale = 3
+shader_parameter/enable_recolor = false
+
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("Char_Stats", "_Weapon_Manager", "BulletCast", "CAM_CONTROLLER") groups=["Player"]]
+collision_layer = 3
+script = ExtResource("1_bav1d")
+Char_Stats = NodePath("Character_Stats")
+_Weapon_Manager = NodePath("head/camera/camera/Weapon_Manager")
+BulletCast = NodePath("GunCast")
+CAM_CONTROLLER = NodePath("head/camera/camera")
+
+[node name="Character_Stats" type="Node" parent="." node_paths=PackedStringArray("Player")]
+script = ExtResource("2_k1h80")
+Player = NodePath("..")
+
+[node name="GunCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -40)
+hit_from_inside = true
+
+[node name="Bullet_Lookat" type="Marker3D" parent="GunCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
+
+[node name="staircast" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="lowercast" type="RayCast3D" parent="staircast"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0089, 0)
+target_position = Vector3(0, -1.2, 0)
+
+[node name="uppercast" type="RayCast3D" parent="staircast"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0706953, -0.830603)
+
+[node name="collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_kx1qt")
+
+[node name="mesh" type="MeshInstance3D" parent="collision"]
+visible = false
+mesh = SubResource("CapsuleMesh_yspxw")
+skeleton = NodePath("../..")
+
+[node name="head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="camera" type="Node3D" parent="head"]
+
+[node name="camera" type="Camera3D" parent="head/camera"]
+
+[node name="gun_viewmodel" type="Node3D" parent="head/camera/camera"]
+
+[node name="Weapon_Manager" type="Node3D" parent="head/camera/camera" node_paths=PackedStringArray("Player_Character", "BulletCast", "GunMesh", "Bullet_Position", "Bullet_LookAt")]
+script = ExtResource("4_up2nn")
+Player_Character = NodePath("../../../..")
+BulletCast = NodePath("../../../../GunCast")
+GunMesh = NodePath("Player_arms/Mesh")
+Bullet_Position = NodePath("Gun_Position")
+Bullet_LookAt = NodePath("../../../../GunCast/Bullet_Lookat")
+
+[node name="Gun_Position" type="Marker3D" parent="head/camera/camera/Weapon_Manager"]
+transform = Transform3D(0.999776, -0.0193117, -0.00860402, 0.0191508, 0.999647, -0.0184023, 0.00895637, 0.0182334, 0.999794, 1.13974, -0.69085, -2.05663)
+
+[node name="Player_arms" type="Node3D" parent="head/camera/camera/Weapon_Manager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40221, 0, -0.193128)
+
+[node name="Mesh" type="MeshInstance3D" parent="head/camera/camera/Weapon_Manager/Player_arms"]
+transform = Transform3D(-1.5, 0, -3.80277e-06, 0, 1.5, 0, 3.80277e-06, 0, -1.5, 0.753614, -0.699837, -1)
+mesh = ExtResource("4_qukfe")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="head/camera/camera/Weapon_Manager"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_si8qo")
+}
+
+[node name="Hud" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="crosshair" type="Control" parent="Hud"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="Hud/crosshair"]
+material = SubResource("ShaderMaterial_vu2hw")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.493968, 0.418391, 0.459039, 1)
+
+[node name="hud" type="Control" parent="Hud"]
+z_index = 1
+material = SubResource("ShaderMaterial_5cgq1")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -11.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true

@@ -1,6 +1,6 @@
 @icon("res://content/ui/godot_icons/character_stats2.svg")
 extends Resource
-class_name Randomized_Player_Stats
+class_name Player_Stats_Resource
 
 
 @export var CHARACTER_NAME : String = ""
@@ -20,19 +20,19 @@ var CODENAME : Array = [
 @export_category("Player Stats")
 var RNG = RandomNumberGenerator.new()
 
-enum Body_Type {
-	SCOUT, #80 HP, 10 SPEED
-	GUARD, #150 HP, 8 SPEED
-	TANK #300 HP, 6 SPEED
-}
+var Body_Type : Array = [
+	"SCOUT", #80 HP, 10 SPEED
+	"GUARD", #150 HP, 8 SPEED
+	"TANK" #300 HP, 6 SPEED
+	]
 
-@export var Player_Type : Body_Type
+@export var Player_Type : String
 
-@export var MAX_HEALTH : int = RNG.randi_range(50, 200)
-@export var MAX_STAMINA : int = RNG.randi_range(70, 150)
+@export var MAX_HEALTH : int = RNG.randi_range(5, 20) * 10
+@export var MAX_STAMINA : int = RNG.randi_range(7, 15) * 10
 
 var SPEED : int = 8
-@export var STRENGTH : int = RNG.randi_range(5, 8)
+@export var STRENGTH : int = RNG.randi_range(1, 5) * 10
 @export var DEXTERITY : int = RNG.randi_range(1, 3)
 @export var LUCK : int = RNG.randi_range(5,30)
-@export var ENDURANCE : int = RNG.randi_range(0, 30)
+@export var ENDURANCE : int = RNG.randi_range(1, 3) * 10

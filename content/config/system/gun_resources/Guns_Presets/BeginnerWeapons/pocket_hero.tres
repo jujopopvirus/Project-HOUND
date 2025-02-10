@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Gun_Resource" load_steps=4 format=3 uid="uid://bbuwfa64dg6dl"]
+
+[ext_resource type="PackedScene" uid="uid://b0dysp73kjwfw" path="res://content/config/system/gun_resources/Guns_Presets/Decals/bullet_debug.tscn" id="1_rr4u3"]
+[ext_resource type="Script" path="res://content/config/system/gun_resources/gun_resource.gd" id="2_t47uq"]
+[ext_resource type="ArrayMesh" uid="uid://b7hpnrn3b7axh" path="res://content/assets/weapons/Kenney_WeaponsPack/blasterC.res" id="3_songi"]
+
+[resource]
+script = ExtResource("2_t47uq")
+Gun_Type = 1
+Gun_Name = "Pocket_Hero"
+view_model = ExtResource("3_songi")
+ammo = "Bullet"
+sway = 0.1
+automatic = true
+max_fire_rate = 260.0
+bullet_decals = ExtResource("1_rr4u3")
+bullet_damage = 25
+spread = 1.2
+max_ammo = 12
+bullet_range = 120
+firing_sounds = Array[AudioStream]([])
+idle_animation = "weapon_idle"
+shoot_animation = "gun_shoot"
+equip_animation = "weapon_deploy"
+reload_animation = "weapon_reload"

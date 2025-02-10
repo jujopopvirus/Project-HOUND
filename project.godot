@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="HOUND"
-run/main_scene="res://content/scenes/maps/h_circlemall.tscn"
+run/main_scene="res://content/scenes/testmaps/character_select_test.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://content/ui/HOUND.png"
+
+[autoload]
+
+GlobalGameManager="*res://content/config/system/global/game_manager.tscn"
 
 [display]
 
